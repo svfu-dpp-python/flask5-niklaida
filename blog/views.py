@@ -1,7 +1,7 @@
 from flask import abort, flash, render_template, redirect, request, session, url_for
 
-from .models import db, User, Post
-from .forms import LoginForm
+from .models import db, User, Post, Comment
+from .forms import LoginForm, CommentForm
 
 
 def index_page():
@@ -12,15 +12,22 @@ def index_page():
 
 def post_page(post_id):
     post = db.get_or_404(Post, post_id)
-    # form = CommentForm()
-    # if request.method == "POST":
-    #     if form.validate_on_submit():
+    form = CommentForm()
+    if request.method == "POST":
+        if form.validate_on_submit():
+            new_comment = Comment()
+            new_comment.post = post
+            new_comment.text = form.text.data
+            db.session.add(new_comment)
+            db.session.commit()
+        return redirect(url_for("post_page", post_id=post_id))
+    #    form = CommentForm(formdata=None)
     #         # Создать объект класса Comment
     #         comment = 
     #         db.session.add(comment)
     #         db.session.commit()
     #         form = CommentForm(formdata=None)
-    return render_template("post.html", post=post)
+    return render_template("post.html", post=post, form=form)
 
 
 def login_page():

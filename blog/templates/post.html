@@ -6,11 +6,15 @@
 <hr>
 <h3>Комментарии</h3>
 {# список комментариев #}
+{% for n in post.comments %}
+<p>{{ n.text }}</p>
+{% endfor %}
 <hr>
 <h3>Введите ваш комментарий</h3>
 <form method="post">
     {{ form.hidden_tag() }}
-    {# поле ввода для комментария #}
+    {{ form.text.label }} {{ form.text() }} 
     <p><input type="submit" value="Добавить"></p>
+    <a href="{{ url_for('index_page') }}">Назад</a>
 </form>
 {% endblock %}
